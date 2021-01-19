@@ -3,7 +3,7 @@ import cv2 as cv
 
 class game:
     def __init__(self):
-        self.__level = int(input("Select Level"))
+        self.__level = int(input("Select Level : "))
         self.m_board = board(self.__level)
     
 class board:
@@ -33,7 +33,7 @@ class board:
 
         self.opened = np.zeros(self.raw_board.shape)
 
-        self.score_board = np.zeros((100,200))
+        self.score_board = np.zeros((100,150))
 
     def raw2real(self):
         [height, width] = self.raw_board.shape
@@ -121,7 +121,11 @@ class board:
 
         global clk
 
-        print(self.raw_board) #Answer
+        print("\nLClick : Open")
+        print("RClick : Flag\n")
+
+        print('Answer : ')
+        print(self.raw_board) 
         
 
         init_mine_cnt = self.mineCnt
@@ -133,7 +137,7 @@ class board:
 
         while True:
             
-            cv.putText(self.score_board, str(self.mineCnt), (0,100), cv.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255))
+            cv.putText(self.score_board, str(self.mineCnt) + ' left', (0,100), cv.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255))
             cv.imshow('Score', self.score_board)
 
 
@@ -225,17 +229,17 @@ def click(event, x, y, flag, param):
 cursorType = 0
 clk = 1
 
-one = cv.imread('one.png', cv.IMREAD_GRAYSCALE)
-two = cv.imread('two.png', cv.IMREAD_GRAYSCALE)
-three = cv.imread('three.png', cv.IMREAD_GRAYSCALE)
-four = cv.imread('four.png', cv.IMREAD_GRAYSCALE)
-five = cv.imread('five.png', cv.IMREAD_GRAYSCALE)
-six = cv.imread('six.png', cv.IMREAD_GRAYSCALE)
-seven = cv.imread('seven.png', cv.IMREAD_GRAYSCALE)
-eight = cv.imread('eight.png', cv.IMREAD_GRAYSCALE)
-zero = cv.imread('zero.png', cv.IMREAD_GRAYSCALE)
-mine = cv.imread('mine.png', cv.IMREAD_GRAYSCALE)
-flag = cv.imread('flag.png', cv.IMREAD_GRAYSCALE)
+one = cv.imread('./image/one.png', cv.IMREAD_GRAYSCALE)
+two = cv.imread('./image/two.png', cv.IMREAD_GRAYSCALE)
+three = cv.imread('./image/three.png', cv.IMREAD_GRAYSCALE)
+four = cv.imread('./image/four.png', cv.IMREAD_GRAYSCALE)
+five = cv.imread('./image/five.png', cv.IMREAD_GRAYSCALE)
+six = cv.imread('./image/six.png', cv.IMREAD_GRAYSCALE)
+seven = cv.imread('./image/seven.png', cv.IMREAD_GRAYSCALE)
+eight = cv.imread('./image/eight.png', cv.IMREAD_GRAYSCALE)
+zero = cv.imread('./image/zero.png', cv.IMREAD_GRAYSCALE)
+mine = cv.imread('./image/mine.png', cv.IMREAD_GRAYSCALE)
+flag = cv.imread('./image/flag.png', cv.IMREAD_GRAYSCALE)
 
 start = game()
 
