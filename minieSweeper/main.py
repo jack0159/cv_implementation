@@ -1,23 +1,25 @@
 import numpy as np
 import cv2 as cv
 
+# Feedback : python에서 global 키워드가 어떤 역할을 하는지 공부해보셈
+
 class game:
     def __init__(self):
         self.__level = int(input("Select Level : "))
         self.m_board = board(self.__level)
     
 class board:
-
     def __init__(self, level):
 
-        width = int(level*6*1.2)
+        width = int(level*6*1.2) # Feedback : use global variable to get intuitive idea of variable
         height = int(level*6*0.8)
 
         self.raw_board = np.random.choice([0, 1], size = (height, width), p = [0.7, 0.3])
         self.raw_board = np.pad(self.raw_board, (1, 1))
 
-        self.mineCnt = sum(sum(self.raw_board))
+        self.mine_cnt = sum(sum(self.raw_board))
 
+        # Feedback : split modules using private method
         win_size = 3
         offset = int(win_size/2)
         temp = np.zeros((height, width))
@@ -38,6 +40,7 @@ class board:
     def raw2real(self):
         [height, width] = self.raw_board.shape
 
+        # Feedback : 10줄 미만으로 짜시오(private 함수를 더 넣던가 씹년아)
         self.cell_size = 40
         real = np.zeros((height*self.cell_size, width*self.cell_size))
         for i in range(height):
@@ -70,6 +73,7 @@ class board:
     def dig(self, idx):
         [h, w] = self.raw_board.shape
         [r, c] = idx
+        # Feedback : 10줄 미만 씹년아
         if self.opened[r, c] == 0:
             self.opened[r, c] = 1
         if self.raw_board[r, c] == 0:
@@ -97,7 +101,7 @@ class board:
             if idx_possible([h, w], [r - 1, c + 1]):
                     if self.opened[r - 1, c + 1] == 0:
                         self.dig([r - 1, c + 1])
-        return
+        return # Feedback : 왜 넣은지 모르곘음
 
     def flag(self, idx):
         [r, c] = idx
@@ -105,15 +109,15 @@ class board:
             self.opened[r, c] = -1
             self.score_board = np.zeros((100,200))
             self.mineCnt = self.mineCnt - 1
-        return
+        return # Feedback : 왜 넣은지 모르곘음
 
     def flagrm(self, idx):
         [r, c] = idx
-        if clk < 8:
+        if clk < 8: # 왜 8임?
             self.opened[r, c] = 0
             self.score_board = np.zeros((100,200))
             self.mineCnt = self.mineCnt + 1
-        return
+        return # Feedback : 왜 넣은지 모르곘음
 
 
     def display(self):
@@ -193,8 +197,9 @@ class board:
             clk = clk + 1
 
 def idx_possible(imgsize, idx):
-    [h, w] = imgsize
+    [h, w] = imgsize # Feedback : imgsize is tuple, python tupue() can be omitted
     [r, c] = idx
+    # Feedback : reduce if statement using 드모르간 법칙
     if r >= h:
         return False
     elif r < 0:
@@ -213,6 +218,7 @@ def click(event, x, y, flag, param):
     global cursorType   
     global clk
 
+    # Feedback 겹치는 부분을 밖으로 빼내
     if event == cv.EVENT_LBUTTONDOWN:
         curR = int(y/40)
         curC = int(x/40)
@@ -225,10 +231,16 @@ def click(event, x, y, flag, param):
         clk = 0
 
 
+# 값들 여러개를 할당 할 땐 tuple을 이용
 [curR, curC] = [-1, -1]
 cursorType = 0
 clk = 1
 
+# Feedback : use Dictionray
+# num_dict = {
+#     1:'one', 2:'two', 3:'three', # ...
+
+# }
 one = cv.imread('./image/one.png', cv.IMREAD_GRAYSCALE)
 two = cv.imread('./image/two.png', cv.IMREAD_GRAYSCALE)
 three = cv.imread('./image/three.png', cv.IMREAD_GRAYSCALE)
