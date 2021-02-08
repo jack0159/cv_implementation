@@ -1,11 +1,30 @@
 import numpy as np
 import cv2 as cv
 
+# 더쪼개
+
+# Interface라는 기능이 있어
+# 이게 무엇이냐...
+# 상속을 받는것만으로
+# 어떤 기능이 추가가되는거야
+# 상속을 받아라!
+# 1. 기본적인 board (MineBoard)
+# 2. 기본적인 board를 렌더링가능한 cv::Mat으로 만들어주는 기능 (BoardDisplayer)
+# 3 click과 같은 게임적인 이벤트(ClickEvent)
+# 4. 최종적으로 모든걸 하는 class(Game)
+
+
+# 코딩 순서
+#  1. 기능의 분리
+#  2. 분리된 기능들의 설계(클래스인지 함수인지 상속은 어케하는지 has-a 인지 is-a 인지 등등...)
+#  3. 코딩 해
+#  4. 최적화 및 리펙토링
+
+# + 빈줄이 너무 많음 compact하게 정리좀 하셈
+
 class MineSweeper:
 
     ## Attributes
-
-
     display_board = None
     raw_board = None
 
@@ -18,15 +37,19 @@ class MineSweeper:
     mine_n = 0
     opened_n = 0
 
-
+    # 파이썬에선 이렇게 잘 안씀
+    # __init__에서 self로 다 정의하지
+    # 보통 이렇게 쓰는 경우는
+    # None 같은거 넣어서 제대로 초기화 안됐거나 하는거 에러 채킹같은거 할때나 이렇게 하는데
+    # python 쓰는데 이따구로 하면 안되제 ㅋㅋ
     
 
     def __init__(self):
 
         self.level = int(input("Select Level : "))
 
-        self.set_size()
-        self.display_board = DisplayBoard(self, 40)
+        self.set_size() # private method 아님?
+        self.display_board = DisplayBoard(self, 40) # has-a
         self.create_raw_board()
         self.numbering_tiles(self.raw_board)
         
@@ -48,7 +71,8 @@ class MineSweeper:
 
         # empty Tile list
         tile_list = []
-
+        
+        #함수형 프로그래밍으로 for문 없이 하자 
         for r in range(self.row_n):
             temp_list = []
             for c in range(self.col_n):
@@ -120,7 +144,7 @@ class MineSweeper:
                     if idx_possible(self.row_n, self.col_n, y + i, x + j):
                         self.dig((y + i, x + j))
 
-    def flag_set_or_remove(self, idx):
+    def flag_set_or_remove(self, idx): # tuple은 왜쓴거야
 
         global left_click
 
@@ -154,11 +178,14 @@ class MineSweeper:
             if left_click:
                 self.dig((current_y, current_x))
             else:
-                self.flag_set_or_remove((current_y, current_x))
+                self.flag_set_or_remove((current_y, current_x)) #tuple은 왜쓴거야
 
         current_x = -1
 
 
+    # main loop가 있는 함수 이름이 game_start...?
+    # 더 분리해
+    # 루프는 main 함수에 있어야지
     def game_start(self):
 
         # Interface#############################
@@ -174,7 +201,7 @@ class MineSweeper:
             if self.player_win():
                 print('You Won')
                 break
-            elif self.is_over:
+            elif self.is_over: 
                 print('Game Over')
                 break
 
@@ -190,6 +217,7 @@ class DisplayBoard:
     width = None
     showing_board = None
 
+    # 미친놈
     def __init__(self, MineSweeper, cell_size):
 
         self.cell_size = cell_size
@@ -200,6 +228,7 @@ class DisplayBoard:
         self.showing_board = np.zeros((self.height, self.width))
 
     # Fill the display board with right tile images
+    # 미친놈
     def display(self, MineSweeper):
 
         c_s = self.cell_size
@@ -219,6 +248,7 @@ class Tile:
     is_opened = False # If opened --> True, default : False
     is_flagged = False
 
+    # 미친놈
     def __init__(self, MineSweeper):
         ratio = 0.2 + (MineSweeper.level * 0.01)
         self.is_mine = random_binary(ratio)
@@ -270,10 +300,11 @@ def click(event, x, y, flag, param):
         left_click = False
 
 
-(current_y, current_x) = (-1, -1)
+# python에서 tuple 소괄호() 생략 가능함
+current_y, current_x = -1, -1
 left_click = True
 
-img_dict = {
+img_dict = { # 이것도 더 깔끔하게 할수 있는데(파일 분리, json)
     1:cv.imread('./image/one.png', cv.IMREAD_GRAYSCALE), 
     2:cv.imread('./image/two.png', cv.IMREAD_GRAYSCALE),
     3:cv.imread('./image/three.png', cv.IMREAD_GRAYSCALE),
@@ -295,7 +326,4 @@ cv.setMouseCallback('MineSweeper', click)
 
 game.game_start()
 
-
-
-
-
+# main 추가
